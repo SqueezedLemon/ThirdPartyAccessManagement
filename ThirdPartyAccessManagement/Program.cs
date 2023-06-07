@@ -12,9 +12,12 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentity<UserManager, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddUserManager<UserManager<UserManager>>()
     .AddDefaultUI()
     .AddDefaultTokenProviders();
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews().AddRazorPagesOptions(options => {
+    options.Conventions.AddAreaPageRoute("Identity", "/Account/Login", "");
+});
 
 var app = builder.Build();
 
@@ -42,5 +45,8 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
-
+using (var scope = app.Services.CreateScope())
+{
+    await DbSeeder.SeedDbAsync(scope.ServiceProvider);
+}
 app.Run();
