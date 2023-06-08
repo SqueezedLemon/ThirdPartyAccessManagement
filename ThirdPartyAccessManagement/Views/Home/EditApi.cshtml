@@ -1,0 +1,32 @@
+﻿@model ThirdPartyAccessManagement.Models.BaseViewModel
+@{
+	ViewData["Title"] = "Edit Api";
+}
+
+@if (User.IsInRole("Admin"))
+{
+	<div class="container">
+		<div class="row">
+			<div class="col-md-5">
+				<h1>Add New Api</h1>
+				<form asp-controller="Home" asp-action="EditApi" method="post">
+					<div class="form-group pb-3">
+						<label asp-for="Api.PageName">Page Name</label>
+						<input asp-for="Api.PageName" type="text" class="form-control" id="page-name" placeholder="@Model.Api.PageName" required>
+						<span asp-validation-for="Api.PageName" class="text-danger"></span>
+					</div>
+					<div class="form-group pb-3">
+						<label asp-for="Api.MethodName">Method Name</label>
+						<input asp-for="Api.MethodName" type="text" class="form-control" id="method-name" placeholder="@Model.Api.MethodName" required>
+						<span asp-validation-for="Api.MethodName" class="text-danger"></span>
+					</div>
+					<button type="submit" class="btn btn-primary">Save Changes</button>
+				</form>
+			</div>
+		</div>
+	</div>
+}
+else
+{
+	<h1>Access Denied</h1>
+}

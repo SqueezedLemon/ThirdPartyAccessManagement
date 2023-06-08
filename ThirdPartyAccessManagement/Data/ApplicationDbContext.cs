@@ -9,11 +9,12 @@ namespace ThirdPartyAccessManagement.Data
             : base(options)
         {
         }
-        DbSet<ThirdPartyUser> ThirdPartyUsers { get; set; }
-        DbSet<ThirdPartyUserStatus> ThirdPartyUserStatuses { get; set; }
-        DbSet<LedgerAccount> LedgerAccounts { get; set; }
-        DbSet<ApiEndpoint> ApiEndpoints { get; set; }
-        DbSet<ThirdPartyAccess> ThirdPartyAccesses { get; set; }
+        public DbSet<ThirdPartyUser>? ThirdPartyUsers { get; set; }
+        public DbSet<ThirdPartyUserStatus>? ThirdPartyUserStatuses { get; set; }
+        public DbSet<LedgerAccount>? LedgerAccounts { get; set; }
+        public DbSet<Method>? Methods { get; set; }
+        public DbSet<Page>? Pages { get; set; }
+        public DbSet<ThirdPartyAccess>? ThirdPartyAccesses { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -57,13 +58,29 @@ namespace ThirdPartyAccessManagement.Data
                .IsRequired()
                .OnDelete(DeleteBehavior.Restrict);
 
-            //Api Endpoint Table
-            modelBuilder.Entity<ApiEndpoint>()
-               .HasOne(ae => ae.User)
+            //Page Table
+            modelBuilder.Entity<Page>()
+               .HasOne(p => p.User)
                .WithMany()
-               .HasForeignKey(ae => ae.CreatedById)
+               .HasForeignKey(p => p.CreatedById)
                .IsRequired()
                .OnDelete(DeleteBehavior.Restrict);
+
+            //Method Table
+            modelBuilder.Entity<Method>()
+               .HasOne(m => m.Page)
+               .WithMany()
+               .HasForeignKey(m => m.PageId)
+               .IsRequired()
+               .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Method>()
+               .HasOne(m => m.User)
+               .WithMany()
+               .HasForeignKey(m => m.CreatedById)
+               .IsRequired()
+               .OnDelete(DeleteBehavior.Restrict);
+
 
             //Third Party Access Table
             modelBuilder.Entity<ThirdPartyAccess>()
@@ -74,9 +91,9 @@ namespace ThirdPartyAccessManagement.Data
                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<ThirdPartyAccess>()
-               .HasOne(tpa => tpa.ApiEndpoint)
+               .HasOne(tpa => tpa.Method)
                .WithMany()
-               .HasForeignKey(ae => ae.ApiEndpointId)
+               .HasForeignKey(tpa => tpa.MethodId)
                .IsRequired()
                .OnDelete(DeleteBehavior.Restrict);
 

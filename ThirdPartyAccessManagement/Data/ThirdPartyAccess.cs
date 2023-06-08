@@ -11,8 +11,8 @@ namespace ThirdPartyAccessManagement.Data
         public int ThirdPartyUserId { get; set; }
         public ThirdPartyUser? ThirdPartyUser { get; set; }
 
-        public int ApiEndpointId { get; set; }
-        public ApiEndpoint? ApiEndpoint { get; set; }   
+        public int MethodId { get; set; }
+        public Method? Method { get; set; }   
 
         public string? CreatedById { get; set; }
         public UserManager? User { get; set; }
