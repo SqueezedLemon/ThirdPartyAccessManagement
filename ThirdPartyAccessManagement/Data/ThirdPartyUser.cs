@@ -8,11 +8,15 @@ namespace ThirdPartyAccessManagement.Data
         public int Id { get; set; }
         public string? Username { get; set; }
         public string? PasswordHash { get; set; }
+        public string? ClientName { get; set; }
         public string? Ip { get; set; }
         public string? Url { get; set; }
         public DateTime CreatedDate { get; set; }
 
         public string? CreatedById { get; set; }
         public UserManager? User { get; set; }
+
+        public int ThirdPartyUserStatusId { get; set; }
+        public ThirdPartyUserStatus? ThirdPartyUserStatus { get; set; }
     }
 }

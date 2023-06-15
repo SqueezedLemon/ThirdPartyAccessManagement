@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ThirdPartyAccessManagement.Data;
+using ThirdPartyAccessManagement.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,8 @@ builder.Services.AddIdentity<UserManager, IdentityRole>()
 builder.Services.AddControllersWithViews().AddRazorPagesOptions(options => {
     options.Conventions.AddAreaPageRoute("Identity", "/Account/Login", "");
 });
+
+builder.Services.AddScoped<IMethodRepo, EFMethodRepo>();
 
 var app = builder.Build();
 

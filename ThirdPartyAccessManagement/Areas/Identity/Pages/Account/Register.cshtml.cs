@@ -19,7 +19,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using ThirdPartyAccessManagement.Data;
-using static ThirdPartyAccessManagement.Constants.Constants;
+using ThirdPartyAccessManagement.Constants;
 
 namespace ThirdPartyAccessManagement.Areas.Identity.Pages.Account
 {

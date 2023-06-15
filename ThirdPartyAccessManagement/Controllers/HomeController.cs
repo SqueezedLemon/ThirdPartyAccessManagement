@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using ThirdPartyAccessManagement.Data;
 using ThirdPartyAccessManagement.Models;
+using ThirdPartyAccessManagement.Repository;
 
 namespace ThirdPartyAccessManagement.Controllers
 {
@@ -13,7 +14,7 @@ namespace ThirdPartyAccessManagement.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _dbContext;
 
-        public HomeController(UserManager<UserManager> userManager, ILogger<HomeController> logger, ApplicationDbContext dbContext)
+        public HomeController(UserManager<UserManager> userManager, ILogger<HomeController> logger, ApplicationDbContext dbContext,IMethodRepo methodRepo)
         {
             _userManager = userManager;
             _logger = logger;
@@ -88,16 +89,14 @@ namespace ThirdPartyAccessManagement.Controllers
         [HttpGet]
         public IActionResult EditApi(BaseViewModel model, int id)
         { 
-            var method = _dbContext.Methods.FirstOrDefault(m => m.Id == id);
+            var method = _dbContext.Methods.Include(m => m.Page).FirstOrDefault(m => m.Id == id);
 			if (method == null)
             {
                 return NotFound();
             }
-			var pageId = method.PageId;
-            var page = _dbContext.Pages.FirstOrDefault(m => m.Id == pageId);
-			if (method != null && page != null)
+			if (method != null)
 			{
-				model.Api.PageName = page.PageName;
+				model.Api.PageName = method.Page.PageName;
 				model.Api.MethodName = method.MethodName;
 			};
             return View(model);
@@ -179,7 +178,25 @@ namespace ThirdPartyAccessManagement.Controllers
             return RedirectToAction("ApiEndpoint");
         }
 
-        public IActionResult Privacy()
+		//View all users in access control
+		public IActionResult AccessControl(BaseViewModel model)
+		{
+            var thirdPartyUsers = _dbContext.ThirdPartyUsers.ToList();
+            if (thirdPartyUsers != null)
+            {
+                model.ThirdPartyUsers = thirdPartyUsers;
+            }
+			return View(model);
+		}
+
+        //Add New Third Party User
+        [HttpGet]
+        public IActionResult AddThirdPartyUser()
+        {
+            return View();
+        }
+
+		public IActionResult Privacy()
         {
             return View();
         }

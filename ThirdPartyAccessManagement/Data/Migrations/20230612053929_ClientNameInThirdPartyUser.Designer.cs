@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ThirdPartyAccessManagement.Data;
 
@@ -11,9 +12,10 @@ using ThirdPartyAccessManagement.Data;
 namespace ThirdPartyAccessManagement.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230612053929_ClientNameInThirdPartyUser")]
+    partial class ClientNameInThirdPartyUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -306,9 +308,6 @@ namespace ThirdPartyAccessManagement.Data.Migrations
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ThirdPartyUserStatusId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Url")
                         .HasColumnType("nvarchar(max)");
 
@@ -318,8 +317,6 @@ namespace ThirdPartyAccessManagement.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedById");
-
-                    b.HasIndex("ThirdPartyUserStatusId");
 
                     b.ToTable("ThirdPartyUser");
                 });
@@ -332,10 +329,25 @@ namespace ThirdPartyAccessManagement.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("CreatedById")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDisabled")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ThirdPartyUserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("ThirdPartyUserId")
+                        .IsUnique();
 
                     b.ToTable("ThirdPartyUserStatus");
                 });
@@ -543,13 +555,24 @@ namespace ThirdPartyAccessManagement.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("ThirdPartyAccessManagement.Data.ThirdPartyUserStatus", "ThirdPartyUserStatus")
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ThirdPartyAccessManagement.Data.ThirdPartyUserStatus", b =>
+                {
+                    b.HasOne("ThirdPartyAccessManagement.Data.UserManager", "User")
                         .WithMany()
-                        .HasForeignKey("ThirdPartyUserStatusId")
+                        .HasForeignKey("CreatedById")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("ThirdPartyUserStatus");
+                    b.HasOne("ThirdPartyAccessManagement.Data.ThirdPartyUser", "ThirdPartyUser")
+                        .WithOne()
+                        .HasForeignKey("ThirdPartyAccessManagement.Data.ThirdPartyUserStatus", "ThirdPartyUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ThirdPartyUser");
 
                     b.Navigation("User");
                 });

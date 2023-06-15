@@ -1,0 +1,32 @@
+﻿@model ThirdPartyAccessManagement.Models.BaseViewModel
+@{
+	ViewData["Title"] = "Add New User";
+}
+
+@if (User.IsInRole("Admin"))
+{
+	<div class="container">
+		<div class="row">
+			<div class="col-md-5">
+				<h1>Add New User</h1>
+				<form asp-controller="Home" asp-action="AddThirdPartyUser" method="post">
+					<div class="form-group pb-3">
+						<label asp-for="Api.PageName">Username</label>
+						<input asp-for="Api.PageName" type="text" class="form-control" id="page-name" required>
+						<span asp-validation-for="Api.PageName" class="text-danger"></span>
+					</div>
+					<div class="form-group pb-3">
+						<label asp-for="Api.MethodName">Method Name</label>
+						<input asp-for="Api.MethodName" type="text" class="form-control" id="method-name" required>
+						<span asp-validation-for="Api.MethodName" class="text-danger"></span>
+					</div>
+					<button type="submit" class="btn btn-primary">Add</button>
+				</form>
+			</div>
+		</div>
+	</div>
+}
+else
+{
+	<h1>Access Denied</h1>
+}

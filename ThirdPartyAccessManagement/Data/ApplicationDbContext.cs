@@ -28,20 +28,12 @@ namespace ThirdPartyAccessManagement.Data
                .IsRequired()
                .OnDelete(DeleteBehavior.Restrict);
 
-            //Third Party User Status Table
-            modelBuilder.Entity<ThirdPartyUserStatus>()
-               .HasOne(tpus => tpus.ThirdPartyUser)
-               .WithOne()
-               .HasForeignKey<ThirdPartyUserStatus>(tpus => tpus.ThirdPartyUserId)
-               .IsRequired()
-               .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<ThirdPartyUserStatus>()
-               .HasOne(tpus => tpus.User)
-               .WithMany()
-               .HasForeignKey(tpus => tpus.CreatedById)
-               .IsRequired()
-               .OnDelete(DeleteBehavior.Restrict);
+			modelBuilder.Entity<ThirdPartyUser>()
+			   .HasOne(tpu => tpu.ThirdPartyUserStatus)
+			   .WithMany()
+			   .HasForeignKey(tpu => tpu.ThirdPartyUserStatusId)
+			   .IsRequired()
+			   .OnDelete(DeleteBehavior.Restrict);
 
             //Ledger Account Table
             modelBuilder.Entity<LedgerAccount>()
